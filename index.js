@@ -4,6 +4,7 @@ export default {
     const target = url.searchParams.get("url");
     if (!target) return new Response("Missing target url", { status: 400 });
 
+    // กำหนด Headers เลียนแบบ iPhone Safari เพื่อผ่าน Cloudflare WAF
     const response = await fetch(target, {
       headers: {
         "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1",
@@ -14,7 +15,10 @@ export default {
 
     return new Response(response.body, {
       status: response.status,
-      headers: { "Content-Type": response.headers.get("Content-Type") || "text/html" }
+      headers: {
+        "Content-Type": response.headers.get("Content-Type") || "text/html",
+        "Access-Control-Allow-Origin": "*"
+      }
     });
   }
 };
